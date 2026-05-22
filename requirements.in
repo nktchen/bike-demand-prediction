@@ -1,0 +1,8 @@
+catboost
+fastapi
+kagglehub
+numpy
+pandas
+pydantic
+scikit-learn
+uvicorn[standard]
