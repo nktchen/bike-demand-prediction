@@ -1,4 +1,4 @@
-import requests
+import httpx
 
 OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast?latitude=38.8951&longitude=-77.0364&hourly=temperature_2m,relative_humidity_2m,weather_code,apparent_temperature,wind_speed_10m&forecast_days=1&timezone=America%2FNew_York&temperature_unit=celsius&wind_speed_unit=kmh"
 DEFAULT_TIMESTAMP = "2012-12-31T04:00:00"
@@ -17,8 +17,9 @@ def get_default_time_data() -> dict[str, int | str]:
         "holiday": DEFAULT_HOLIDAY,
     }
 
-def fetch_weather_from_open_meteo() -> dict[str, float | int | str]:
-    response = requests.get(OPEN_METEO_URL, timeout=10)
+async def fetch_weather_from_open_meteo() -> dict[str, float | int | str]:
+    async with httpx.AsyncClient(timeout=10) as client:
+        response = await client.get(OPEN_METEO_URL)
     response.raise_for_status()
     payload = response.json()
 
