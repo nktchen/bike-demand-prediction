@@ -1,11 +1,12 @@
 import logging
 from pathlib import Path
 
+import requests
 from fastapi import FastAPI, HTTPException
 
 from src.predict import load_demo_history, load_model, predict_one
 from src.schemas import HealthResponse, PredictRequest, PredictResponse
-
+from src.weather import fetch_weather_from_open_meteo, get_default_time_data
 
 LOG_PATH = Path(__file__).resolve().parents[1] / "logs.txt"
 
@@ -19,7 +20,6 @@ if not logger.handlers:
     )
     logger.addHandler(file_handler)
 
-
 app = FastAPI(title="bike demand prediction API")
 
 model = load_model()
@@ -32,7 +32,6 @@ def root():
 @app.get("/health", response_model=HealthResponse)
 def health() -> HealthResponse:
     return HealthResponse(status="ok")
-
 
 @app.post("/predict", response_model=PredictResponse)
 def predict(request: PredictRequest) -> PredictResponse:
@@ -54,4 +53,30 @@ def predict(request: PredictRequest) -> PredictResponse:
             request.model_dump(mode="json"),
             str(exc),
         )
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+@app.get("/predict_now", response_model=PredictResponse)
+def predict_now() -> PredictResponse:
+    try:
+        payload = {
+            **get_default_time_data(),
+            **fetch_weather_from_open_meteo(),
+        }
+        request = PredictRequest.model_validate(payload)
+        response = predict_one(
+            model=model,
+            request=request,
+            history=demo_history,
+        )
+        logger.info(
+            "predict_now_ok request=%s response=%s",
+            request.model_dump(mode="json"),
+            response.model_dump(mode="json"),
+        )
+        return response
+    except requests.RequestException as exc:
+        logger.warning("predict_now_weather_error error=%s", str(exc))
+        raise HTTPException(status_code=502, detail="weather api request failed") from exc
+    except ValueError as exc:
+        logger.warning("predict_now_error error=%s", str(exc))
         raise HTTPException(status_code=400, detail=str(exc)) from exc

@@ -4,6 +4,7 @@ kagglehub
 numpy
 pandas
 pydantic
+requests
 scikit-learn
 uvicorn[standard]
 mlflow
