@@ -2,4 +2,5 @@
 .venv/
 .env
 data/
+logs.txt
 __pycache__/
