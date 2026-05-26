@@ -1,7 +1,7 @@
 import httpx
 
 OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast?latitude=38.8951&longitude=-77.0364&hourly=temperature_2m,relative_humidity_2m,weather_code,apparent_temperature,wind_speed_10m&forecast_days=1&timezone=America%2FNew_York&temperature_unit=celsius&wind_speed_unit=kmh"
-DEFAULT_TIMESTAMP = "2012-12-31T04:00:00"
+DEFAULT_TIMESTAMP = "2012-12-31T11:00:00"
 DEFAULT_HOLIDAY = 0
 
 def open_meteo_code_to_weathersit(weather_code: int) -> int:
