@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from datetime import datetime
 
 import httpx
 from fastapi import FastAPI, HTTPException
@@ -56,10 +57,11 @@ def predict(request: PredictRequest) -> PredictResponse:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 @app.get("/predict_now", response_model=PredictResponse)
-async def predict_now() -> PredictResponse:
+async def predict_now(request) -> PredictResponse:
     try:
+        current_hour = datetime.now().hour
         payload = {
-            **get_default_time_data(),
+            **get_default_time_data(current_hour),
             **await fetch_weather_from_open_meteo(),
         }
         request = PredictRequest.model_validate(payload)
