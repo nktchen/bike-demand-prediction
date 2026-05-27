@@ -14,6 +14,3 @@ class PredictResponse(BaseModel):
     prediction: float
     prediction_rounded: int
     timestamp: datetime
-
-class HealthResponse(BaseModel):
-    status: str

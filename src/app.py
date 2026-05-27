@@ -5,7 +5,7 @@ import httpx
 from fastapi import FastAPI, HTTPException
 
 from src.predict import load_demo_history, load_model, predict_one
-from src.schemas import HealthResponse, PredictRequest, PredictResponse
+from src.schemas import PredictRequest, PredictResponse
 from src.weather import fetch_weather_from_open_meteo, get_default_time_data
 
 LOG_PATH = Path(__file__).resolve().parents[1] / "logs.txt"
@@ -27,11 +27,11 @@ demo_history = load_demo_history()
 
 @app.get('/')
 def root():
-    return {"message": "hi! use /predict pls"}
+    return {"message": "hi! use POST /predict with data from ./../demo_requests.json or use GET /predict_now"}
 
-@app.get("/health", response_model=HealthResponse)
-def health() -> HealthResponse:
-    return HealthResponse(status="ok")
+@app.get("/health")
+def health():
+    return "ok"
 
 @app.post("/predict", response_model=PredictResponse)
 def predict(request: PredictRequest) -> PredictResponse:
