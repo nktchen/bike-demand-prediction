@@ -57,7 +57,7 @@ def predict(request: PredictRequest) -> PredictResponse:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 @app.get("/predict_now", response_model=PredictResponse)
-async def predict_now(request) -> PredictResponse:
+async def predict_now() -> PredictResponse:
     try:
         current_hour = datetime.now().hour
         payload = {
