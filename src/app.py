@@ -27,7 +27,7 @@ demo_history = load_demo_history()
 
 @app.get('/')
 def root():
-    return {"message": "hi! use POST /predict with data from ./../demo_requests.json or use GET /predict_now"}
+    return {"message": "hi! use POST /predict with data from ./../demo_requests.json (u can send POST request through OpenAPI - just open bike-ml-pred.nktchen.tech/docs) or use GET /predict_now"}
 
 @app.get("/health")
 def health():
