@@ -79,8 +79,24 @@ async def predict_now() -> PredictResponse:
         )
         return response
     except httpx.HTTPError as exc:
-        logger.warning("predict_now_weather_error error=%s", str(exc))
+        logger.warning("predict_now_weather_error exception_type=%s exception=%r", 
+            type(exc).__name__,
+            exc
+        )
         raise HTTPException(status_code=502, detail="weather api request failed") from exc
     except ValueError as exc:
-        logger.warning("predict_now_error error=%s", str(exc))
+        logger.warning("predict_now_error exception_type=%s exception=%r",
+            type(exc).__name__,
+            exc
+        )
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:
+        logger.exception(
+            "predict_now_unexpected_error exception_type=%s exception=%r",
+            type(exc).__name__,
+            exc,
+        )
+        raise HTTPException(
+            status_code=500,
+            detail="internal server error",
+        ) from exc
